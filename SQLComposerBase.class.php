@@ -1,34 +1,117 @@
 <?php
 require_once 'SQLComposer.class.php';
 
+/**
+ * SQLComposerBase
+ *
+ * The base class that all query classes should extend.
+ */
 abstract class SQLComposerBase {
 
+	/**
+	 * LIMIT clause
+	 *
+	 * @var int
+	 */
 	protected $limit = null;
 
+	/**
+	 * The query's columns
+	 *
+	 * @var array
+	 */
 	protected $columns = array( );
+
+	/**
+	 * The query's tables
+	 *
+	 * @var array
+	 */
 	protected $tables = array( );
+
+	/**
+	 * The query's parameters (for prepared statements)
+	 *
+	 * @var array
+	 */
 	protected $params = array( );
+
+	/**
+	 * The 'types' string needed for parameters in a mysqli prepared statement
+	 *
+	 * @var array
+	 */
 	protected $mysqli_types = array( );
 
+
+	/***************
+	 **  METHODS  **
+	 ***************/
+
+	/**
+	 * LIMIT clause
+	 *
+	 * @param int $limit
+	 * @return SQLComposerBase
+	 */
 	public function limit($limit) {
 		$this->limit = (int)$limit;
 		return $this;
 	}
 
+	/**
+	 * Add a table to the query
+	 *
+	 * @param string $table
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerBase
+	 */
 	public function add_table($table, array $params = null, $mysqli_types = "") {
 		$this->tables[] = $table;
 		$this->_add_params('tables', $params, $mysqli_types);
 		return $this;
 	}
 
+	/**
+	 * Alias for add_table
+	 *
+	 * @see add_table()
+	 * @param string $table
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerBase
+	 */
 	public function join($table, array $params = null, $mysqli_types = "") {
 		return $this->add_table($table, $params, $mysqli_types);
 	}
 
+	/**
+	 * Alias for add_table
+	 *
+	 * @see add_table()
+	 * @param string $table
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerBase
+	 */
 	public function from($table, array $params = null, $mysqli_types = "") {
 		return $this->add_table($table, $params, $mysqli_types);
 	}
 
+
+	/******************
+	 **  PARAMETERS  **
+	 ******************/
+
+	/**
+	 * Add a parameter to the list
+	 *
+	 * @param string $clause
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerBase
+	 */
 	protected function _add_params($clause, array $params = null, $mysqli_types = "") {
 		if (isset($params)) {
 
@@ -46,6 +129,12 @@ abstract class SQLComposerBase {
 		return $this;
 	}
 
+	/**
+	 * Get the array of parameters, merged by the given order
+	 *
+	 * @param string $order,...
+	 * @return array
+	 */
 	protected function _get_params($order) {
 		if (!is_array($order)) $order = func_get_args();
 
@@ -69,6 +158,19 @@ abstract class SQLComposerBase {
 	}
 
 	/**
+	 * Get the array of parameters
+	 *
+	 * @abstract
+	 * @return array
+	 */
+	abstract public function getParams();
+
+
+	/*****************
+	 **  RENDERING  **
+	 *****************/
+
+	/**
 	 * Alias for render()
 	 *
 	 * @see render()
@@ -77,15 +179,6 @@ abstract class SQLComposerBase {
 	public function getQuery() {
 		return $this->render();
 	}
-
-
-	/**
-	 * Get the array of parameters
-	 *
-	 * @abstract
-	 * @return array
-	 */
-	abstract public function getParams();
 
 	/**
 	 * Get the rendered SQL query
@@ -104,6 +197,12 @@ abstract class SQLComposerBase {
 		return $this->getQuery() . "\n\n" . print_r($this->getParams(), true);
 	}
 
+	/**
+	 * Helper to render a boolean expression, such as in a WHERE or HAVING clause.
+	 *
+	 * @param array $expression
+	 * @return string
+	 */
 	protected static function _render_bool_expr(array $expression) {
 
 		$str = "";
