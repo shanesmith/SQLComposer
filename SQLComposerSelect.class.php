@@ -77,7 +77,7 @@ class SQLComposerSelect extends SQLComposerWhere {
 	}
 
 	protected function _render_having() {
-		return $this->_render_bool_expr($this->having);
+		return SQLComposerBase::_render_bool_expr($this->having);
 	}
 
 	public function render() {

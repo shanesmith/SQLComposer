@@ -32,7 +32,7 @@ abstract class SQLComposerWhere extends SQLComposerBase {
 	}
 
 	protected function _render_where() {
-		return $this->_render_bool_expr($this->where);
+		return SQLComposerBase::_render_bool_expr($this->where);
 	}
 
 

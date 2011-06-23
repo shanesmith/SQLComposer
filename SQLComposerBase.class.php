@@ -68,19 +68,43 @@ abstract class SQLComposerBase {
 		return $params;
 	}
 
+	/**
+	 * Alias for render()
+	 *
+	 * @see render()
+	 * @return string
+	 */
 	public function getQuery() {
 		return $this->render();
 	}
 
+
+	/**
+	 * Get the array of parameters
+	 *
+	 * @abstract
+	 * @return array
+	 */
 	abstract public function getParams();
 
+	/**
+	 * Get the rendered SQL query
+	 *
+	 * @abstract
+	 * @return string
+	 */
 	abstract public function render();
 
+	/**
+	 * Get a string of the SQL query and parameters for debugging
+	 *
+	 * @return string
+	 */
 	public function debug() {
 		return $this->getQuery() . "\n\n" . print_r($this->getParams(), true);
 	}
 
-	protected function _render_bool_expr(array $expression) {
+	protected static function _render_bool_expr(array $expression) {
 
 		$str = "";
 
