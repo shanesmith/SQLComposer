@@ -108,10 +108,6 @@ class SQLComposerSelect extends SQLComposerWhere {
 		return "SELECT {$distinct} {$columns} {$from} {$where} {$group_by} {$with_rollup} {$having} {$order_by} {$limit}";
 	}
 
-	public function getQuery() {
-		return $this->render();
-	}
-
 	public function getParams() {
 		return $this->_get_params('select', 'tables', 'where', 'group_by', 'having', 'order_by');
 	}
