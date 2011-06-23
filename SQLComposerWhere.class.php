@@ -1,36 +1,88 @@
 <?php
 require_once "SQLComposer.class.php";
 
+/**
+ * SQLComposerWhere
+ *
+ * A helper class for any query classes that contain a WHERE clause
+ */
 abstract class SQLComposerWhere extends SQLComposerBase {
 
+	/**
+	 * WHERE clause
+	 *
+	 * @var array
+	 */
 	protected $where = array( );
 
-	public function where($where, $params = null, $mysqli_types = "") {
+
+	/***************
+	 **  METHODS  **
+	 ***************/
+
+	/**
+	 * Add a where expression
+	 *
+	 * @param string $where
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerWhere
+	 */
+	public function where($where, array $params = null, $mysqli_types = "") {
 		$this->where[] = $where;
 		$this->_add_params('where', $params, $mysqli_types);
 		return $this;
 	}
 
+	/**
+	 * Add a where expression by using SQLComposer::in()
+	 *
+	 * @see SQLComposer::in()
+	 * @param string $where
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerWhere
+	 */
 	public function where_in($where, array $params, $mysqli_types = "") {
 		list($where, $params, $mysqli_types) = SQLComposer::in($where, $params, $mysqli_types);
 		return $this->where($where, $params, $mysqli_types);
 	}
 
+	/**
+	 * Open a paranthesis with for sub-expressions using 'AND'
+	 *
+	 * @return SQLComposerWhere
+	 */
 	public function open_where_and() {
 		$this->where[] = array( '(', 'AND' );
 		return $this;
 	}
 
+	/**
+	 * Open a paranthesis with for sub-expressions using 'OR'
+	 *
+	 * @return SQLComposerWhere
+	 */
 	public function open_where_or() {
 		$this->where[] = array( '(', 'OR' );
 		return $this;
 	}
 
+	/**
+	 * Close a paranthesis with for sub-expressions
+	 *
+	 * @return SQLComposerWhere
+	 */
 	public function close_where() {
 		$this->where[] = array( ')' );
 		return $this;
 	}
 
+	/**
+	 * Render the where clause (without the starting 'WHERE')
+	 *
+	 * @return string
+	 */
 	protected function _render_where() {
 		return SQLComposerBase::_render_bool_expr($this->where);
 	}
