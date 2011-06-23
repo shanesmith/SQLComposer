@@ -56,10 +56,6 @@ abstract class SQLComposer {
 		return array($sql, $params, $mysqli_types);
 	}
 
-	public static function paranthesis($str) {
-		return "({$str})";
-	}
-
 	public static function is_assoc($array) {
 		return (array_keys($array) !== range(0, count($array) - 1));
 	}
