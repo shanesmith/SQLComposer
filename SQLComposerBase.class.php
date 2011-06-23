@@ -76,19 +76,8 @@ abstract class SQLComposerBase {
 
 	abstract public function render();
 
-	public function renderHTML() {
-		$render = $this->render();
-		$render = nl2br(htmlspecialchars($render));
-		$render = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $render);
-		return $render;
-	}
-
 	public function debug() {
 		return $this->getQuery() . "\n\n" . print_r($this->getParams(), true);
-	}
-
-	public function __toString() {
-		return $this->getQuery();
 	}
 
 	protected function _render_bool_expr(array $expression) {
