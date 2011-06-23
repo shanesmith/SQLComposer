@@ -1,85 +1,227 @@
 <?php
 require_once 'SQLComposer.class.php';
 
+/**
+ * SQLComposerSelect
+ *
+ * A SELECT query
+ */
 class SQLComposerSelect extends SQLComposerWhere {
 
+	/**
+	 * SELECT DISTINCT ...
+	 *
+	 * @var bool
+	 */
 	protected $distinct = false;
+
+	/**
+	 * OFFSET clause
+	 *
+	 * @var int
+	 */
 	protected $offset = null;
 
+	/**
+	 * GROUP BY clause
+	 *
+	 * @var array
+	 */
 	protected $group_by = array( );
+
+	/**
+	 * GROUP BY ... WITH ROLLUP
+	 *
+	 * @var bool
+	 */
 	protected $with_rollup = false;
+
+	/**
+	 * HAVING clause
+	 *
+	 * @var array
+	 */
 	protected $having = array( );
+
+	/**
+	 * ORDER BY clause
+	 *
+	 * @var array
+	 */
 	protected $order_by = array( );
 
+	/*******************
+	 **  CONSTRUCTOR  **
+	 *******************/
+
+	/**
+	 * Constructor.
+	 *
+	 * Calls select()
+	 *
+	 * @see select()
+	 * @param string $select
+	 * @param array $params
+	 * @param string $mysqli_types
+	 */
 	public function __construct($select = null, array $params = null, $mysqli_types = "") {
 		if (isset($select)) {
 			$this->select($select, $params, $mysqli_types);
 		}
 	}
 
+	/**
+	 * Add a statement for SELECT
+	 *
+	 * @param string $select
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerSelect
+	 */
 	public function select($select, array $params = null, $mysqli_types = "") {
 		$this->columns = array_merge($this->columns, (array)$select);
 		$this->_add_params('select', $params, $mysqli_types);
 		return $this;
 	}
 
+	/**
+	 * DISTINCT
+	 *
+	 * @param bool $distinct
+	 * @return SQLComposerSelect
+	 */
 	public function distinct($distinct = true) {
 		$this->distinct = (bool)$distinct;
 		return $this;
 	}
 
+	/**
+	 * Add a statement for GROUP BY
+	 *
+	 * @param string $group_by
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerSelect
+	 */
 	public function group_by($group_by, array $params = null, $mysqli_types = "") {
 		$this->group_by[] = $group_by;
 		$this->_add_params('group_by', $params, $mysqli_types);
 		return $this;
 	}
 
+	/**
+	 * Add WITH ROLLUP after the GROUP BY
+	 *
+	 * @param bool $with_rollup
+	 * @return SQLComposerSelect
+	 */
 	public function with_rollup($with_rollup = true) {
 		$this->with_rollup = $with_rollup;
 		return $this;
 	}
 
-	public function having($having, array $params = null, $mysqli_types = "") {
-		$this->having[] = $having;
-		$this->_add_params('having', $params, $mysqli_types);
-		return $this;
-	}
-
+	/**
+	 * Add an ORDER BY statement
+	 *
+	 * @param string $order_by
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerSelect
+	 */
 	public function order_by($order_by, array $params = null, $mysqli_types = "") {
 		$this->order_by[] = $order_by;
 		$this->_add_params('order_by', $params, $mysqli_types);
 		return $this;
 	}
 
+	/**
+	 * OFFSET
+	 *
+	 * @param int $offset
+	 * @return SQLComposerSelect
+	 */
 	public function offset($offset) {
 		$this->offset = (int)$offset;
 		return $this;
 	}
 
+	/**
+	 * Add a HAVING statement
+	 *
+	 * @param string $having
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerSelect
+	 */
+	public function having($having, array $params = null, $mysqli_types = "") {
+		$this->having[] = $having;
+		$this->_add_params('having', $params, $mysqli_types);
+		return $this;
+	}
+
+	/**
+	 * Add a HAVING expression by using SQLComposer::in()
+	 *
+	 * @see SQLComposer::in()
+	 * @param string $having
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerSelect
+	 */
 	public function having_in($having, array $params, $mysqli_types = "") {
 		list($having, $params, $mysqli_types) = SQLComposer::in($having, $params, $mysqli_types);
 		return $this->having($having, $params, $mysqli_types);
 	}
 
+	/**
+	 * Open a paranthesis for sub-expressions using 'AND'
+	 *
+	 * @return SQLComposerSelect
+	 */
 	public function open_having_and() {
 		$this->having[] = array( '(', 'AND' );
 		return $this;
 	}
 
+	/**
+	 * Open a paranthesis for sub-expressions using 'OR'
+	 *
+	 * @return SQLComposerSelect
+	 */
 	public function open_having_or() {
 		$this->having[] = array( '(', 'OR' );
 		return $this;
 	}
 
+	/**
+	 * Close a paranthesis for sub-expressions
+	 *
+	 * @return SQLComposerSelect
+	 */
 	public function close_having() {
 		$this->having[] = array( ')' );
 		return $this;
 	}
 
+
+	/**************
+	 **  HAVING  **
+	 **************/
+
+	/**
+	 * Render the having clause (without the starting 'HAVING')
+	 *
+	 * @return string
+	 */
 	protected function _render_having() {
 		return SQLComposerBase::_render_bool_expr($this->having);
 	}
 
+	/**
+	 * Get the rendered SQL query
+	 *
+	 * @return string
+	 */
 	public function render() {
 		$columns = empty($this->columns) ? "*" : implode(", ", $this->columns);
 
@@ -108,6 +250,11 @@ class SQLComposerSelect extends SQLComposerWhere {
 		return "SELECT {$distinct} {$columns} {$from} {$where} {$group_by} {$with_rollup} {$having} {$order_by} {$limit}";
 	}
 
+	/**
+	 * Get the parameters
+	 *
+	 * @return array
+	 */
 	public function getParams() {
 		return $this->_get_params('select', 'tables', 'where', 'group_by', 'having', 'order_by');
 	}
