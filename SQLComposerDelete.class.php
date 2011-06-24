@@ -9,7 +9,9 @@ class SQLComposerDelete extends SQLComposerWhere {
 	protected $limit = null;
 	protected $using = array( );
 
-	public function __construct() {
+
+
+	public function __construct($table=null) {
 		if (isset($table)) $this->delete_from($table);
 	}
 
