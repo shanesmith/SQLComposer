@@ -69,8 +69,8 @@ class SQLComposerUpdate extends SQLComposerWhere {
 	/**
 	 * SET
 	 *
-	 * Can either be a string of the form "col=?"
-	 * or an array with columns as keys and corresponding values as parameters.
+	 * Can either be a numeric array of the form array( "col=?", "col2 = col3 + 10", ... ), or a single string of the same form,
+	 * or an associative array with columns as keys and corresponding values as parameters.
 	 *
 	 * ex:
 	 *  SQLComposer::update('table')->set(array( 'name' => 'john', 'fav_color' => 'blue' ))->where("id=?", array(25));
@@ -89,12 +89,15 @@ class SQLComposerUpdate extends SQLComposerWhere {
 	 * @return SQLComposerUpdate
 	 */
 	public function set($set, array $params = null, $mysqli_types = null) {
-		if (is_array($set)) {
+		$set = (array)$set;
+
+		if (SQLComposer::is_assoc($set)) {
 			foreach ($set as $col => $val) $this->set[] = "{$col}=?";
 			$params = array_values($set);
 		} else {
-			$this->set[] = $set;
+			$this->set = array_merge($this->set, $set);
 		}
+
 		$this->_add_params('set', $params, $mysqli_types);
 		return $this;
 	}
