@@ -147,7 +147,7 @@ class SQLComposerUpdate extends SQLComposerWhere {
 
 		$tables = implode("\n\t", $this->tables);
 
-		$set = "\nSET" . implode(", ", $this->set);
+		$set = "\nSET " . implode(", ", $this->set);
 
 		$where = $this->_render_where();
 
