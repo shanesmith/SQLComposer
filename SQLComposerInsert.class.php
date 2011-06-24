@@ -5,6 +5,9 @@ require_once 'SQLComposer.class.php';
  * SQLComposerInsert
  *
  * An INSERT query
+ *
+ * @package SQLComposer
+ * @author Shane Smith
  */
 class SQLComposerInsert extends SQLComposerBase {
 

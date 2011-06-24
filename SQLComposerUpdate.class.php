@@ -5,6 +5,9 @@ require_once 'SQLComposer.class.php';
  * SQLComposerUpdate
  *
  * An UPDATE query
+ *
+ * @package SQLComposer
+ * @author Shane Smith
  */
 class SQLComposerUpdate extends SQLComposerWhere {
 

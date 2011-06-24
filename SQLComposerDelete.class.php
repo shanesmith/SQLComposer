@@ -5,6 +5,9 @@ require_once 'SQLComposer.class.php';
  * SQLComposerDelete
  *
  * A DELETE query
+ *
+ * @package SQLComposer
+ * @author Shane Smith
  */
 class SQLComposerDelete extends SQLComposerWhere {
 

@@ -1,4 +1,12 @@
 <?php
+/**
+ * SQLComposer
+ *
+ * @package SQLComposer
+ * @author Shane Smith
+ * @version 0.1
+ */
+
 require_once "SQLComposerBase.class.php";
 require_once "SQLComposerWhere.class.php";
 
@@ -15,6 +23,9 @@ require_once "SQLComposerDelete.class.php";
  *
  * ex:
  *  SQLComposer::select(array("id", "name", "role"))->from("users");
+ *
+ * @package SQLComposer
+ * @author Shane Smith
  */
 abstract class SQLComposer {
 

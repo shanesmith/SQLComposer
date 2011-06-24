@@ -5,6 +5,9 @@ require_once 'SQLComposer.class.php';
  * SQLComposerSelect
  *
  * A SELECT query
+ *
+ * @package SQLComposer
+ * @author Shane Smith
  */
 class SQLComposerSelect extends SQLComposerWhere {
 

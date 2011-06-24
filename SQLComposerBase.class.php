@@ -5,6 +5,9 @@ require_once 'SQLComposer.class.php';
  * SQLComposerBase
  *
  * The base class that all query classes should extend.
+ *
+ * @package SQLComposer
+ * @author Shane Smith
  */
 abstract class SQLComposerBase {
 

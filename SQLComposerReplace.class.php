@@ -5,6 +5,9 @@ require_once 'SQLComposer.class.php';
  * SQLComposerReplace
  *
  * A REPLACE query
+ *
+ * @package SQLComposer
+ * @author Shane Smith
  */
 class SQLComposerReplace extends SQLComposerBase {
 
