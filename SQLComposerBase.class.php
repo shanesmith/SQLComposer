@@ -9,13 +9,6 @@ require_once 'SQLComposer.class.php';
 abstract class SQLComposerBase {
 
 	/**
-	 * LIMIT clause
-	 *
-	 * @var int
-	 */
-	protected $limit = null;
-
-	/**
 	 * The query's columns
 	 *
 	 * @var array
@@ -47,17 +40,6 @@ abstract class SQLComposerBase {
 	/***************
 	 **  METHODS  **
 	 ***************/
-
-	/**
-	 * LIMIT clause
-	 *
-	 * @param int $limit
-	 * @return SQLComposerBase
-	 */
-	public function limit($limit) {
-		$this->limit = (int)$limit;
-		return $this;
-	}
 
 	/**
 	 * Add a table to the query

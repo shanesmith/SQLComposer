@@ -50,6 +50,13 @@ class SQLComposerSelect extends SQLComposerWhere {
 	 */
 	protected $order_by = array( );
 
+	/**
+	 * LIMIT clause
+	 *
+	 * @var int
+	 */
+	protected $limit = null;
+
 	/*******************
 	 **  CONSTRUCTOR  **
 	 *******************/
@@ -131,6 +138,17 @@ class SQLComposerSelect extends SQLComposerWhere {
 	public function order_by($order_by, array $params = null, $mysqli_types = "") {
 		$this->order_by[] = $order_by;
 		$this->_add_params('order_by', $params, $mysqli_types);
+		return $this;
+	}
+
+	/**
+	 * LIMIT clause
+	 *
+	 * @param int $limit
+	 * @return SQLComposerSelect
+	 */
+	public function limit($limit) {
+		$this->limit = (int)$limit;
 		return $this;
 	}
 
