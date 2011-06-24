@@ -3,8 +3,6 @@ require_once 'SQLComposer.class.php';
 
 class SQLComposerReplace extends SQLComposerBase {
 
-	protected $table;
-
 	protected $select;
 
 	public function __construct($table = null) {
@@ -16,9 +14,7 @@ class SQLComposerReplace extends SQLComposerBase {
 	}
 
 	public function into($table) {
-		if (isset($this->table)) throw new SQLComposerException("The table has already been set to: {$this->table}");
-
-		$this->table = $table;
+		$this->add_table($table);
 		return $this;
 	}
 
@@ -53,7 +49,7 @@ class SQLComposerReplace extends SQLComposerBase {
 	}
 
 	public function render() {
-		$table = $this->table;
+		$table = $this->tables[0];
 
 		$columns = (empty($this->columns)) ? "" : "(" . implode(", ", $this->columns) . ")";
 
