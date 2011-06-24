@@ -5,8 +5,6 @@ class SQLComposerInsert extends SQLComposerBase {
 
 	protected $ignore = false;
 
-	protected $table;
-
 	protected $select;
 
 	protected $on_duplicate = array( );
@@ -20,9 +18,7 @@ class SQLComposerInsert extends SQLComposerBase {
 	}
 
 	public function into($table) {
-		if (isset($this->table)) throw new SQLComposerException("The table has already been set to: {$this->table}");
-
-		$this->table = $table;
+		$this->add_table($table);
 		return $this;
 	}
 
@@ -68,7 +64,7 @@ class SQLComposerInsert extends SQLComposerBase {
 	}
 
 	public function render() {
-		$table = $this->table;
+		$table = $this->tables[0];
 
 		$ignore = $this->ignore ? "IGNORE" : "";
 
