@@ -109,16 +109,9 @@ abstract class SQLComposer {
 	 **  DELETE  **
 	 **************/
 
-	/**
-	 * Start a new DELETE statement
-	 *
-	 * @see SQLComposerDelete::__construct()
-	 * @param string $table
-	 * @return SQLComposerDelete
+	/*
+	 *  Left out delete($table) to enforce the DELETE FROM ... USING ... style of query
 	 */
-	public static function delete($table=null) {
-		return self::delete_from($table);
-	}
 
 	/**
 	 * Start a new DELETE statement
