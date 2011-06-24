@@ -9,9 +9,11 @@ require_once 'SQLComposer.class.php';
 class SQLComposerDelete extends SQLComposerWhere {
 
 	/**
+	 * DELETE FROM
+	 *
 	 * @var array
 	 */
-	protected $using = array( );
+	protected $delete_from = array( );
 
 	/**
 	 * IGNORE
@@ -52,12 +54,10 @@ class SQLComposerDelete extends SQLComposerWhere {
 	 * Add a table to the DELETE FROM clause
 	 *
 	 * @param string $table
-	 * @param array $params
-	 * @param string $mysqli_types
 	 * @return SQLComposerDelete
 	 */
-	public function delete_from($table, array $params = null, $mysqli_types = "") {
-		$this->add_table($table, $params, $mysqli_types);
+	public function delete_from($table) {
+		$this->delete_from[] = $table;
 		return $this;
 	}
 
@@ -70,9 +70,7 @@ class SQLComposerDelete extends SQLComposerWhere {
 	 * @return SQLComposerDelete
 	 */
 	public function using($table, array $params = null, $mysqli_types = "") {
-		$this->using[] = $table;
-		$this->_add_params('using', $params, $mysqli_types);
-		return $this;
+		return $this->add_table($table, $params, $mysqli_types);
 	}
 
 	/**
@@ -109,9 +107,9 @@ class SQLComposerDelete extends SQLComposerWhere {
 	 */
 	public function render() {
 
-		$tables = implode("\n\t", $this->tables);
+		$delete_from = implode(", ", $this->delete_from);
 
-		$using = empty($this->using) ? "" : "\nUSING " . implode("\n\t", $this->using);
+		$using = empty($this->tables) ? "" : "\nUSING " . implode("\n\t", $this->tables);
 
 		$where = $this->_render_where();
 
@@ -119,7 +117,7 @@ class SQLComposerDelete extends SQLComposerWhere {
 
 		$limit = !isset($this->limit) ? "" : "\nLIMIT " . $this->limit;
 
-		return "DELETE FROM {$tables} {$using} WHERE {$where} {$order_by} {$limit}";
+		return "DELETE FROM {$delete_from} {$using} \nWHERE {$where} {$order_by} {$limit}";
 	}
 
 	/**
