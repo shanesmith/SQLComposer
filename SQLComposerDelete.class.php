@@ -53,18 +53,18 @@ class SQLComposerDelete extends SQLComposerWhere {
 	/**
 	 * Add a table to the DELETE FROM clause
 	 *
-	 * @param string $table
+	 * @param string|array $table
 	 * @return SQLComposerDelete
 	 */
 	public function delete_from($table) {
-		$this->delete_from[] = $table;
+		$this->delete_from = array_merge($this->delete_from, (array)$table);
 		return $this;
 	}
 
 	/**
 	 * Add a table to the USING clause
 	 *
-	 * @param string $table
+	 * @param string|array $table
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerDelete
@@ -76,11 +76,11 @@ class SQLComposerDelete extends SQLComposerWhere {
 	/**
 	 * ORDER BY
 	 *
-	 * @param string $order_by
+	 * @param string|array $order_by
 	 * @return SQLComposerDelete
 	 */
 	public function order_by($order_by) {
-		$this->order_by[] = $order_by;
+		$this->order_by = array_merge($this->order_by, (array)$order_by);
 		return $this;
 	}
 

@@ -67,7 +67,7 @@ class SQLComposerSelect extends SQLComposerWhere {
 	 * Calls select()
 	 *
 	 * @see select()
-	 * @param string $select
+	 * @param string|array $select
 	 * @param array $params
 	 * @param string $mysqli_types
 	 */
@@ -80,7 +80,7 @@ class SQLComposerSelect extends SQLComposerWhere {
 	/**
 	 * Add a statement for SELECT
 	 *
-	 * @param string $select
+	 * @param string|array $select
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerSelect
@@ -105,13 +105,13 @@ class SQLComposerSelect extends SQLComposerWhere {
 	/**
 	 * Add a statement for GROUP BY
 	 *
-	 * @param string $group_by
+	 * @param string|array $group_by
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerSelect
 	 */
 	public function group_by($group_by, array $params = null, $mysqli_types = "") {
-		$this->group_by[] = $group_by;
+		$this->group_by = array_merge($this->group_by, (array)$group_by);
 		$this->_add_params('group_by', $params, $mysqli_types);
 		return $this;
 	}
@@ -130,13 +130,13 @@ class SQLComposerSelect extends SQLComposerWhere {
 	/**
 	 * Add an ORDER BY statement
 	 *
-	 * @param string $order_by
+	 * @param string|array $order_by
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerSelect
 	 */
 	public function order_by($order_by, array $params = null, $mysqli_types = "") {
-		$this->order_by[] = $order_by;
+		$this->order_by = array_merge($this->order_by, (array)$order_by);
 		$this->_add_params('order_by', $params, $mysqli_types);
 		return $this;
 	}
@@ -166,13 +166,13 @@ class SQLComposerSelect extends SQLComposerWhere {
 	/**
 	 * Add a HAVING statement
 	 *
-	 * @param string $having
+	 * @param string|array $having
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerSelect
 	 */
 	public function having($having, array $params = null, $mysqli_types = "") {
-		$this->having[] = $having;
+		$this->having = array_merge($this->having, (array)$having);
 		$this->_add_params('having', $params, $mysqli_types);
 		return $this;
 	}
@@ -187,6 +187,7 @@ class SQLComposerSelect extends SQLComposerWhere {
 	 * @return SQLComposerSelect
 	 */
 	public function having_in($having, array $params, $mysqli_types = "") {
+		if (!is_string($having)) throw new SQLComposerException("Method having_in must be called with a string as first argument.");
 		list($having, $params, $mysqli_types) = SQLComposer::in($having, $params, $mysqli_types);
 		return $this->having($having, $params, $mysqli_types);
 	}

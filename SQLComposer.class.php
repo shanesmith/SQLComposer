@@ -26,8 +26,8 @@ abstract class SQLComposer {
 	 * Start a new SELECT statement
 	 *
 	 * @see SQLComposerSelect::__construct()
-	 * @param string $select
 	 * @param array $params
+	 * @param string|array $select
 	 * @param string $mysqli_types
 	 * @return SQLComposerSelect
 	 */
@@ -97,7 +97,7 @@ abstract class SQLComposer {
 	 * Start a new UPDATE statement
 	 *
 	 * @see SQLComposerUpdate::__construct()
-	 * @param string $table
+	 * @param string|array $table
 	 * @return SQLComposerUpdate
 	 */
 	public static function update($table=null) {
@@ -117,7 +117,7 @@ abstract class SQLComposer {
 	 * Start a new DELETE statement
 	 *
 	 * @see SQLComposerDelete::__construct()
-	 * @param string $table
+	 * @param string|array $table
 	 * @return SQLComposerDelete
 	 */
 	public static function delete_from($table=null) {

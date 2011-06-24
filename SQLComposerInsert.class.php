@@ -83,11 +83,11 @@ class SQLComposerInsert extends SQLComposerBase {
 	/**
 	 * Set the columns for INSERT INTO table (col1, col2, ...)
 	 *
-	 * @param array $columns
+	 * @param string|array $column
 	 * @return SQLComposerInsert
 	 */
-	public function columns(array $columns) {
-		$this->columns = $columns;
+	public function columns($column) {
+		$this->columns = array_merge($this->columns, (array)$column);
 		return $this;
 	}
 
@@ -121,7 +121,7 @@ class SQLComposerInsert extends SQLComposerBase {
 	/**
 	 * Return a SQLComposerSelect object to be used in a query of the type INSERT INTO ... SELECT ...
 	 *
-	 * @param string $select
+	 * @param string|array $select
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerSelect
@@ -143,13 +143,13 @@ class SQLComposerInsert extends SQLComposerBase {
 	/**
 	 * ON DUPLICATE KEY UPDATE
 	 *
-	 * @param array $update
+	 * @param string|array $update
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerInsert
 	 */
-	public function on_duplicate(array $update, array $params = null, $mysqli_types = "") {
-		$this->on_duplicate = array_merge($this->on_duplicate, $update);
+	public function on_duplicate($update, array $params = null, $mysqli_types = "") {
+		$this->on_duplicate = array_merge($this->on_duplicate, (array)$update);
 		$this->_add_params('on_duplicate', $params, $mysqli_types);
 		return $this;
 	}

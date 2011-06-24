@@ -22,7 +22,7 @@ class SQLComposerReplace extends SQLComposerBase {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $table
+	 * @param string|array $table
 	 */
 	public function __construct($table = null) {
 		if (isset($table)) $this->into($table);
@@ -31,7 +31,7 @@ class SQLComposerReplace extends SQLComposerBase {
 	/**
 	 * REPLACE INTO
 	 *
-	 * @param string $table
+	 * @param string|array $table
 	 * @return SQLComposerReplace
 	 */
 	public function replace_into($table) {
@@ -41,7 +41,7 @@ class SQLComposerReplace extends SQLComposerBase {
 	/**
 	 * REPLACE INTO
 	 *
-	 * @param string $table
+	 * @param string|array $table
 	 * @return SQLComposerReplace
 	 */
 	public function into($table) {
@@ -52,11 +52,11 @@ class SQLComposerReplace extends SQLComposerBase {
 	/**
 	 * Set the columns for REPLACE INTO table (col1, col2, ...)
 	 *
-	 * @param array $columns
+	 * @param string|array $columns
 	 * @return SQLComposerReplace
 	 */
-	public function columns(array $columns) {
-		$this->columns = $columns;
+	public function columns($column) {
+		$this->columns = array_merge($this->columns, (array)$column);
 		return $this;
 	}
 
@@ -90,7 +90,7 @@ class SQLComposerReplace extends SQLComposerBase {
 	/**
 	 * Return a SQLComposerSelect object to be used in a query of the type REPLACE INTO ... SELECT ...
 	 *
-	 * @param string $select
+	 * @param string|array $select
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerSelect

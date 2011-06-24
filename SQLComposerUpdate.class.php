@@ -44,7 +44,7 @@ class SQLComposerUpdate extends SQLComposerWhere {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $table
+	 * @param string|array $table
 	 */
 	public function __construct($table = null) {
 		if (isset($table)) $this->update($table);
@@ -58,7 +58,7 @@ class SQLComposerUpdate extends SQLComposerWhere {
 	/**
 	 * UPDATE
 	 *
-	 * @param string $table
+	 * @param string|array $table
 	 * @return SQLComposerUpdate
 	 */
 	public function update($table) {
@@ -102,11 +102,11 @@ class SQLComposerUpdate extends SQLComposerWhere {
 	/**
 	 * ORDER BY
 	 *
-	 * @param string $order_by
+	 * @param string|array $order_by
 	 * @return SQLComposerUpdate
 	 */
 	public function order_by($order_by) {
-		$this->order_by[] = $order_by;
+		$this->order_by = array_merge($this->order_by, (array)$order_by);
 		return $this;
 	}
 

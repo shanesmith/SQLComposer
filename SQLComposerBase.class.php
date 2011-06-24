@@ -44,13 +44,13 @@ abstract class SQLComposerBase {
 	/**
 	 * Add a table to the query
 	 *
-	 * @param string $table
+	 * @param string|array $table
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerBase
 	 */
 	public function add_table($table, array $params = null, $mysqli_types = "") {
-		$this->tables[] = $table;
+		$this->tables = array_merge($this->tables, (array)$table);
 		$this->_add_params('tables', $params, $mysqli_types);
 		return $this;
 	}
@@ -59,7 +59,7 @@ abstract class SQLComposerBase {
 	 * Alias for add_table
 	 *
 	 * @see add_table()
-	 * @param string $table
+	 * @param string|array $table
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerBase
@@ -72,7 +72,7 @@ abstract class SQLComposerBase {
 	 * Alias for add_table
 	 *
 	 * @see add_table()
-	 * @param string $table
+	 * @param string|array $table
 	 * @param array $params
 	 * @param string $mysqli_types
 	 * @return SQLComposerBase
