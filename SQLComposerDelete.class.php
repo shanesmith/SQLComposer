@@ -128,7 +128,7 @@ class SQLComposerDelete extends SQLComposerWhere {
 	 * @return array
 	 */
 	public function getParams() {
-		$this->_get_params('tables', 'using', 'where');
+		return $this->_get_params('tables', 'using', 'where');
 	}
 
 }
