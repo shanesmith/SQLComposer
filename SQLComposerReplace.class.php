@@ -52,7 +52,10 @@ class SQLComposerReplace extends SQLComposerBase {
 	/**
 	 * Set the columns for REPLACE INTO table (col1, col2, ...)
 	 *
-	 * @param string|array $columns
+	 * If no columns are specified by rendering time and the first set of values
+	 * is an associative array, the array's keys will become the column names.
+	 *
+	 * @param string|array $column
 	 * @return SQLComposerReplace
 	 */
 	public function columns($column) {
@@ -63,8 +66,8 @@ class SQLComposerReplace extends SQLComposerBase {
 	/**
 	 * Provide a set of values to be replaced.
 	 *
-	 * If the columns are not yet set and an associative array is passed,
-	 * the array keys will be used as the columns.
+	 * If no columns are specified by rendering time and the first set of values
+	 * is an associative array, the array's keys will become the column names.
 	 *
 	 * ex:
 	 *  SQLComposer::replace_into('table')->values(array( 'id' => '25', 'name' => 'joe', 'fav_color' => 'green' ));
@@ -79,10 +82,6 @@ class SQLComposerReplace extends SQLComposerBase {
 	 */
 	public function values(array $values, $mysqli_types = "") {
 		if (isset($this->select)) throw new SQLComposerException("Cannot use 'REPLACE INTO ... VALUES' when a SELECT is already set!");
-
-		if (!isset($this->columns) && SQLComposer::is_assoc($values)) {
-			$this->columns(array_keys($values));
-		}
 
 		return $this->_add_params('values', array( $values ), $mysqli_types);
 	}
@@ -118,14 +117,13 @@ class SQLComposerReplace extends SQLComposerBase {
 	public function render() {
 		$table = $this->tables[0];
 
-		$columns = (empty($this->columns)) ? "" : "(" . implode(", ", $this->columns) . ")";
+		$columns = $this->_get_columns();
+		$columns = empty($columns) ? "" : "(" . implode(", ", $columns) . ")";
 
 		if (isset($this->select)) {
 			$values = "\n" . $this->select->render();
 		} else {
-			// can't count($this->columns) since some entries might have multiple columns
-			$num_cols = substr_count($columns, ",") + 1;
-			$placeholders = "(" . implode(", ", array_fill(0, $num_cols, "?")) . ")";
+			$placeholders = "(" . implode(", ", array_fill(0, $this->_num_columns(), "?")) . ")";
 
 			$num_values = count($this->params['values']);
 
@@ -149,11 +147,13 @@ class SQLComposerReplace extends SQLComposerBase {
 		} else {
 
 			$params = array( );
+			$columns = $this->_get_columns();
+			$num_cols = $this->_num_columns();
 			foreach ($this->params["values"] as $values) {
 				if (SQLComposer::is_assoc($values)) {
-					foreach ($this->columns as $col) $params[] = $values[$col];
+					foreach ($columns as $col) $params[] = $values[$col];
 				} else {
-					$params = array_merge($params, array_slice($values, 0, sizeof($this->columns)));
+					$params = array_merge($params, array_slice($values, 0, $num_cols));
 				}
 			}
 
@@ -164,6 +164,38 @@ class SQLComposerReplace extends SQLComposerBase {
 		}
 
 		return $params;
+	}
+
+	/**
+	 * Get the currently set columns,
+	 * or, if none set, the keys of the first values array if it is associative
+	 *
+	 * @return array
+	 */
+	protected function _get_columns() {
+		if (!empty($this->columns)) {
+			return $this->columns;
+		}
+		elseif (SQLComposer::is_assoc($this->params['values'][0])) {
+			return array_keys($this->params['values'][0]);
+		}
+		else {
+			return array();
+		}
+	}
+
+	/**
+	 * Get the number of defined columns,
+	 * or, if none defined, the number of the first values array
+	 *
+	 * @return int
+	 */
+	protected function _num_columns() {
+		if (!empty($this->columns)) {
+			return count($this->columns);
+		} else {
+			return count($this->params['values'][0]);
+		}
 	}
 
 }
