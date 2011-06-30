@@ -29,6 +29,22 @@ require_once "SQLComposerDelete.class.php";
  */
 abstract class SQLComposer {
 
+	/**
+	 * A useful list of valid SQL operator
+	 *
+	 * @var array
+	 */
+	public static $operators = array(
+		'greater than' => '>',
+		'greater than or equal' => '>=',
+		'less than' => '<',
+		'less than or equal' => '<=',
+		'equal' => '=',
+		'not equal' => '!=',
+		'between' => 'between',
+		'in' => 'in'
+	);
+
 	/**************
 	 **  SELECT  **
 	 **************/
@@ -179,6 +195,17 @@ abstract class SQLComposer {
 	public static function is_assoc($array) {
 		return (array_keys($array) !== range(0, count($array) - 1));
 	}
+	
+	/**
+	 * Whether the given operator is a valid SQL operator
+	 *
+	 * @param string $op
+	 * @return bool
+	 */
+	public static function isValidOperator($op) {
+		return in_array($op, self::$operators);
+	}	
+	
 }
 
 /**
