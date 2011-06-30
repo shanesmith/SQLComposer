@@ -195,7 +195,7 @@ abstract class SQLComposer {
 	public static function is_assoc($array) {
 		return (array_keys($array) !== range(0, count($array) - 1));
 	}
-	
+
 	/**
 	 * Whether the given operator is a valid SQL operator
 	 *
@@ -204,8 +204,31 @@ abstract class SQLComposer {
 	 */
 	public static function isValidOperator($op) {
 		return in_array($op, self::$operators);
-	}	
-	
+	}
+
+	/**
+	 * Returns the SQL relating to the operator
+	 *
+	 * @param string $column
+	 * @param string $op
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return string
+	 */
+	public static function applyOperator($column, $op, array $params=null, $mysqli_types="") {
+		switch ($op) {
+			case '>': case '>=':
+			case '<': case '<=':
+			case '=': case '!=':
+				return array("{$column} {$op} ?", $params, $mysqli_types);
+			case 'in':
+				return self::in("{$column} in (?)", $params, $mysqli_types);
+			case 'between':
+				return array("{$column} between ? and ?", $params, $mysqli_types);
+			default:
+				throw new SQLComposerException("Invalid operator: {$op}");
+		}
+	}
 }
 
 /**

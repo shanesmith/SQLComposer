@@ -49,6 +49,20 @@ abstract class SQLComposerWhere extends SQLComposerBase {
 	}
 
 	/**
+	 * Add a where expression by using SQLComposer::applyOperator()
+	 *
+	 * @param string $column
+	 * @param string $op
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerWhere
+	 */
+	public function where_op($column, $op, array $params=null, $mysqli_types="") {
+		list($where, $params, $mysqli_types) = SQLComposer::applyOperator($column, $op, $params, $mysqli_types);
+		return $this->where($where, $params, $mysqli_types);
+	}
+
+	/**
 	 * Open a paranthesis with for sub-expressions using 'AND'
 	 *
 	 * @return SQLComposerWhere

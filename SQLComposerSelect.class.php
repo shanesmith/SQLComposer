@@ -196,6 +196,21 @@ class SQLComposerSelect extends SQLComposerWhere {
 	}
 
 	/**
+	 * Add a HAVING expression by using SQLComposer::applyOperator()
+	 *
+	 * @see SCLComposer::applyOperator()
+	 * @param string $column
+	 * @param string $op
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerSelect
+	 */
+	public function having_op($column, $op, array $params=null, $mysqli_types="") {
+		list($where, $params, $mysqli_types) = SQLComposer::applyOperator($column, $op, $params, $mysqli_types);
+		return $this->having($where, $params, $mysqli_types);
+	}
+
+	/**
 	 * Open a paranthesis for sub-expressions using 'AND'
 	 *
 	 * @return SQLComposerSelect
