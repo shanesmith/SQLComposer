@@ -178,11 +178,29 @@ abstract class SQLComposer {
 	 * @return array
 	 */
 	public static function in($sql, array $params, $mysqli_types="") {
-		$placeholders = implode(",", array_fill(0, sizeof($params), "?"));
-		$sql = str_replace("?", $placeholders, $sql);
+		$given_params = $params;
+
+		$placeholders = array( );
+		$params = array();
+
+		foreach ($given_params as $p) {
+			if ($p instanceof SQLComposerExpr) {
+				$placeholders[] = $p->value;
+				if (!empty($p->params)) {
+					$params = array_merge($params, $p->params);
+				}
+			} else {
+				$placeholders[] = "?";
+				$params[] = $p;
+			}
+		}
+
 		if (strlen($mysqli_types) == 1) {
 			$mysqli_types = str_repeat($mysqli_types, sizeof($params));
 		}
+
+		$placeholders = implode(", ", $placeholders);
+		$sql = str_replace("?", $placeholders, $sql);
 		return array($sql, $params, $mysqli_types);
 	}
 
@@ -224,10 +242,50 @@ abstract class SQLComposer {
 			case 'in':
 				return self::in("{$column} in (?)", $params, $mysqli_types);
 			case 'between':
-				return array("{$column} between ? and ?", $params, $mysqli_types);
+				$sql = "{$column} between ";
+				$p = array_shift($params);
+				if ($p instanceof SQLComposerExpr) {
+					$sql .= $p->value;
+				} else {
+					$sql .= "?";
+					array_push($params, $p);
+				}
+				$sql .= " and ";
+				$p = array_shift($params);
+				if ($p instanceof SQLComposerExpr) {
+					$sql .= $p->value;
+				} else {
+					$sql .= "?";
+					array_push($params, $p);
+				}
+				return array($sql, $params, $mysqli_types);
 			default:
 				throw new SQLComposerException("Invalid operator: {$op}");
 		}
+	}
+
+	/**
+	 * A factory for SQLComposerExpr
+	 *
+	 * @param string $val
+	 * @param array $params
+	 * @param string $mysqli_types
+	 * @return SQLComposerExpr
+	 */
+	public static function expr($val, array $params=array(), $mysqli_types="") {
+		return new SQLComposerExpr($val, $params, $mysqli_types);
+	}
+}
+
+/**
+ * A container to denote an expression to be directly embedded
+ */
+class SQLComposerExpr {
+	public $value, $params, $mysqli_types;
+	public function __construct($val, array $params=array(), $mysqli_types="") {
+		$this->value = $val;
+		$this->params = $params;
+		$this->mysqli_types = $mysqli_types;
 	}
 }
 
