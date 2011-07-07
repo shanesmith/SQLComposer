@@ -202,13 +202,17 @@ abstract class SQLComposerBase {
 			if (is_array($expr)) {
 
 				if ($expr[0] == '(') {
+					array_push($stack, $op);
+
 					if (!$first)
 						$str .= " " . $op;
 
-					$str .= " (";
-
-					array_push($stack, $op);
-					$op = $expr[1];
+					if ($expr[1] == "NOT") {
+						$str .= " NOT";
+					} else {
+						$str .= " (";
+						$op = $expr[1];
+					}
 
 					$first = true;
 					continue;

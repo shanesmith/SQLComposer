@@ -63,7 +63,7 @@ abstract class SQLComposerWhere extends SQLComposerBase {
 	}
 
 	/**
-	 * Open a paranthesis with for sub-expressions using 'AND'
+	 * Open a paranthesis for sub-expressions using 'AND'
 	 *
 	 * @return SQLComposerWhere
 	 */
@@ -73,12 +73,34 @@ abstract class SQLComposerWhere extends SQLComposerBase {
 	}
 
 	/**
-	 * Open a paranthesis with for sub-expressions using 'OR'
+	 * Open a paranthesis for sub-expressions using 'OR'
 	 *
 	 * @return SQLComposerWhere
 	 */
 	public function open_where_or() {
 		$this->where[] = array( '(', 'OR' );
+		return $this;
+	}
+
+	/**
+	 * Open a paranthesis preceded by a 'NOT' for sub-expressions using 'AND'
+	 *
+	 * @return SQLComposerWhere
+	 */
+	public function open_where_not_and() {
+		$this->where[] = array('(', 'NOT');
+		$this->open_where_and();
+		return $this;
+	}
+
+	/**
+	 * Open a paranthesis preceded by a 'NOT' for sub-expressions using 'OR'
+	 *
+	 * @return SQLComposerWhere
+	 */
+	public function open_where_not_or() {
+		$this->where[] = array( '(', 'NOT' );
+		$this->open_where_or();
 		return $this;
 	}
 

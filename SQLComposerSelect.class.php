@@ -231,6 +231,28 @@ class SQLComposerSelect extends SQLComposerWhere {
 	}
 
 	/**
+	 * Open a paranthesis preceded by a 'NOT' for sub-expressions using 'AND'
+	 *
+	 * @return SQLComposerWhere
+	 */
+	public function open_having_not_and() {
+		$this->having[] = array( '(', 'NOT' );
+		$this->open_having_and();
+		return $this;
+	}
+
+	/**
+	 * Open a paranthesis preceded by a 'NOT' for sub-expressions using 'OR'
+	 *
+	 * @return SQLComposerWhere
+	 */
+	public function open_having_not_or() {
+		$this->having[] = array( '(', 'NOT' );
+		$this->open_having_or();
+		return $this;
+	}
+
+	/**
 	 * Close a paranthesis for sub-expressions
 	 *
 	 * @return SQLComposerSelect
