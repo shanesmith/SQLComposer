@@ -83,5 +83,5 @@ $sqlc = SQLComposer::select('*')
 ```
 Which will result in the parameter array:
 ```php
-array("iis", $min, $max, $city
+array("iis", $min, $max, $city)
 ```
