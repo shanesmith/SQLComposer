@@ -21,7 +21,7 @@ Then build your query:
 $sqlc = SQLComposer::select(array("u.id", "u.name", "c.color fav_color"))
 	->from("users u")
 	->join("JOIN colors c ON c.user_id=u.id")
-	->where("u.city=?, array($city))
+	->where("u.city=?", array($city))
 	->where("u.age between ? and ?", array($min_age, $max_age))
 	->order_by("u.name")
 	->limit(25);
